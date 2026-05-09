@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneGTM Lab — Strategy + Execution. All in One GTM System.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Surface / Ink */
+      --bg: #F1F5E8;
+      --bg-2: #E9F0DC;
+      --paper: #FFFFFF;
+      --ink: #0E1412;
+      --ink-2: #2B332F;
+      --ink-3: #5F6B63;
+      --line: #D9DCCF;
+      --line-strong: #B9BEAC;
+
+      /* Brand */
+      --brand: #0C7A5E;
+      --brand-ink: #064A3B;
+      --brand-soft: #CDEBDB;
+      --brand-soft-2: #E6F5EC;
+
+      /* Accent hues */
+      --mint-50:#E6F5EC;  --mint-100:#CDEBDB;  --mint-200:#9DD5BA;  --mint-700:#0C7A5E;
+      --sky-50:#E8EEFA;   --sky-100:#D4DEF3;   --sky-200:#A9BDE5;   --sky-700:#2A4A9B;
+      --lav-50:#F1ECFA;   --lav-100:#E4D9F4;   --lav-200:#C8B6E8;   --lav-700:#5B2E9F;
+      --butter-50:#FBF5D5; --butter-100:#F6EBA4; --butter-200:#EADF7B; --butter-700:#6E5A07;
+      --blush-50:#FCE9EC; --blush-100:#F8D3D9;  --blush-200:#EFA5B0;  --blush-700:#9E1B2C;
+      --peach-50:#FCECD8; --peach-100:#F8D9B3;  --peach-200:#EEB77C;  --peach-700:#8A4B10;
+
+      /* Markers */
+      --marker-yellow: #F3EE86;
+      --marker-mint: #B8E9CE;
+
+      /* Geometry */
+      --r-xs: 6px; --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-pill: 999px;
+      --shadow-card: 0 1px 0 rgba(20,30,20,0.04), 0 8px 24px rgba(20,30,20,0.05);
+      --shadow-pop:  0 2px 0 rgba(20,30,20,0.04), 0 16px 40px rgba(20,30,20,0.08);
+
+      --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+      --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background:
+        radial-gradient(1200px 600px at 80% -5%, #E3EEC8 0%, transparent 60%),
+        radial-gradient(900px 500px at -8% 105%, #DDEBCD 0%, transparent 55%),
+        var(--bg);
+      color: var(--ink);
+      font-size: 1rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg-2); border-radius: 10px; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.022em; line-height: 1.1; }
+    h1 { font-size: clamp(2.5rem, 5.5vw, 4.25rem); }
+    h2 { font-size: clamp(1.875rem, 4vw, 3.125rem); }
+    h3 { font-size: clamp(1.25rem, 2.5vw, 1.625rem); }
+    em { font-style: italic; color: var(--brand); font-weight: 500; }
+
+    /* Pill labels */
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.13em;
+      text-transform: uppercase; font-weight: 500;
+      padding: 5px 11px; border-radius: var(--r-pill);
+      background: var(--paper); color: var(--ink-2); border: 1px solid var(--line);
+    }
+    .pill-mint   { background: var(--mint-100); color: var(--mint-700); border-color: var(--mint-200); }
+    .pill-lav    { background: var(--lav-100); color: var(--lav-700); border-color: var(--lav-200); }
+    .pill-sky    { background: var(--sky-100); color: var(--sky-700); border-color: var(--sky-200); }
+    .pill-butter { background: var(--butter-100); color: var(--butter-700); border-color: var(--butter-200); }
+    .pill-dark   { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: var(--r-sm);
+      font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 500;
+      cursor: pointer; text-decoration: none; border: 1px solid transparent;
+      transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .btn-dark:hover { opacity: 0.82; }
+    .btn-brand { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .btn-brand:hover { opacity: 0.88; }
+    .btn-outline { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+    .btn-outline:hover { background: var(--paper); border-color: var(--ink); }
+    .btn-outline-white { background: transparent; color: #fff; border-color: rgba(255,255,255,0.28); }
+    .btn-outline-white:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+
+    /* Section eyebrow */
+    .eyebrow {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--ink-3); display: inline-block; margin-bottom: 16px;
+    }
+
+    /* Badge (hero) */
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 100px; border: 1px solid var(--line);
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--ink-3); background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(6px);
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(241,245,232,0.88); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { color: var(--ink-3); text-decoration: none; font-size: 0.9375rem; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--ink); }
+
+    /* Cards */
+    .card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 28px; box-shadow: var(--shadow-card); }
+    .card-tinted { border-radius: var(--r-lg); padding: 26px; border: 1px solid transparent; }
+    .card-dark { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--r-lg); padding: 32px; }
+
+    .t-mint    { background: var(--mint-50); border-color: var(--mint-200); }
+    .t-lav     { background: var(--lav-50); border-color: var(--lav-200); }
+    .t-sky     { background: var(--sky-50); border-color: var(--sky-200); }
+    .t-butter  { background: var(--butter-50); border-color: var(--butter-200); }
+
+    /* Topo rings background motif */
+    .topo {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.4;
+      background-image:
+        radial-gradient(circle at 8% 95%, transparent 180px, rgba(12,122,94,0.10) 181px, rgba(12,122,94,0.10) 182px, transparent 183px),
+        radial-gradient(circle at 8% 95%, transparent 260px, rgba(12,122,94,0.07) 261px, rgba(12,122,94,0.07) 262px, transparent 263px),
+        radial-gradient(circle at 8% 95%, transparent 340px, rgba(12,122,94,0.05) 341px, rgba(12,122,94,0.05) 342px, transparent 343px);
+    }
+
+    /* Testimonial cards */
+    .tcard { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px; box-shadow: var(--shadow-card); }
+    .tcard-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .tcard-header { display: flex; align-items: center; gap: 11px; margin-bottom: 14px; }
+    .tcard-name { font-weight: 600; font-size: 0.9375rem; font-family: var(--font-display); color: var(--ink); }
+    .tcard-role { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-3); letter-spacing: 0.05em; }
+    .tcard-quote { font-size: 0.9rem; color: var(--ink-2); line-height: 1.7; }
+    .tcard-stats { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; gap: 24px; }
+    .tcard-stat-val { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; color: var(--brand); }
+    .tcard-stat-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+
+    /* Arrow lists */
+    ul.arrows { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+    ul.arrows li { position: relative; padding: 0 0 0 18px; font-size: 0.875rem; color: var(--ink-2); line-height: 1.5; }
+    ul.arrows li::before { content: "→"; position: absolute; left: 0; top: 0; font-weight: 600; opacity: 0.8; }
+    ul.arrows.mint li::before { color: var(--mint-700); }
+    ul.arrows.lav li::before  { color: var(--lav-700); }
+    ul.arrows.sky li::before  { color: var(--sky-700); }
+    ul.arrows.butter li::before { color: var(--butter-700); }
+
+    /* Stat cards */
+    .stat-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 36px 28px; text-align: center; box-shadow: var(--shadow-card); }
+    .stat-val { font-family: var(--font-display); font-size: clamp(2.5rem, 4.5vw, 3.5rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--ink); }
+    .stat-val em { color: var(--brand); }
+    .stat-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); margin-top: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* Hub diagram */
+    .hub-outer { width: 300px; height: 300px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; }
+    .hub-mid { width: 230px; height: 230px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); display: flex; align-items: center; justify-content: center; position: relative; }
+    .hub-core { width: 124px; height: 124px; border-radius: 50%; background: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; gap: 2px; }
+    .hub-core-label { font-family: var(--font-mono); font-size: 0.55rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+    .hub-core-title { font-family: var(--font-display); font-size: 1.0625rem; font-weight: 600; color: #fff; letter-spacing: -0.02em; line-height: 1.1; }
+    .hub-node { position: absolute; width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--paper); box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
+
+    /* Logo bar */
+    .logo-bar-item { font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--line-strong); letter-spacing: -0.01em; }
+
+    /* Timeline */
+    .timeline { position: relative; display: flex; flex-direction: column; gap: 40px; max-width: 680px; margin: 0 auto; }
+    .timeline::before { content: ''; position: absolute; left: 30px; top: 32px; bottom: 32px; width: 2px; background: var(--line); }
+    .tl-item { display: flex; gap: 36px; align-items: flex-start; }
+    .tl-dot { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-family: var(--font-mono); font-weight: 600; font-size: 0.7rem; letter-spacing: 0.05em; position: relative; z-index: 1; text-align: center; line-height: 1.3; border: 3px solid var(--paper); box-shadow: 0 0 0 1px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.1); }
+    .tl-body { padding-top: 10px; }
+    .tl-title { font-family: var(--font-display); font-weight: 600; font-size: 1.0625rem; margin-bottom: 6px; color: var(--ink); }
+    .tl-desc { font-size: 0.9rem; color: var(--ink-2); line-height: 1.7; }
+
+    /* Video card */
+    .video-card { position: relative; border-radius: var(--r-lg); overflow: hidden; background: var(--ink); cursor: pointer; box-shadow: 0 32px 64px rgba(14,20,18,0.16), 0 4px 12px rgba(14,20,18,0.08); }
+    .video-card img { width: 100%; display: block; opacity: 0.6; }
+    .video-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,20,18,0.1) 0%, rgba(14,20,18,0.55) 100%); display: flex; align-items: center; justify-content: center; }
+    .play-btn { width: 68px; height: 68px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(6px); transition: transform 0.2s ease, background 0.2s ease; }
+    .video-card:hover .play-btn { transform: scale(1.08); background: rgba(255,255,255,0.2); }
+
+    /* Funnel bar */
+    .funnel-bar { display: flex; border-radius: var(--r-pill); overflow: hidden; border: 1px solid var(--line); font-family: var(--font-mono); font-size: 10.5px; }
+    .funnel-bar > div { padding: 12px 14px; color: var(--ink); flex: 1; text-align: center; border-right: 1px solid rgba(0,0,0,0.05); }
+    .funnel-bar > div:last-child { border-right: none; }
+    .f-0{background:#CFEBDB;} .f-1{background:#DFEFC9;} .f-2{background:#F1F2BE;}
+    .f-3{background:#F8E8B0;} .f-4{background:#F8CFB0;} .f-5{background:#F4B7B6;} .f-6{background:#EE9CA6;}
+
+    /* Highlighted word */
+    .hi { background: linear-gradient(transparent 58%, var(--marker-yellow) 58%, var(--marker-yellow) 92%, transparent 92%); padding: 0 0.05em; }
+    .hi-mint { background: linear-gradient(transparent 58%, var(--marker-mint) 58%, var(--marker-mint) 92%, transparent 92%); padding: 0 0.05em; }
+
+    /* Animations */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.32s; }
+    .delay-4 { animation-delay: 0.46s; }
+
+    /* Card highlight */
+    .card-brand { border-color: var(--mint-200); box-shadow: 0 0 0 1px var(--mint-200), var(--shadow-card); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .grid-3 { grid-template-columns: 1fr !important; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+      .grid-footer { grid-template-columns: 1fr 1fr !important; }
+      .hub-row { flex-direction: column !important; align-items: center !important; }
+    }
+    @media (max-width: 480px) {
+      .grid-4 { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="brand_assets/OGL Full Logo.png" alt="OneGTM Lab" style="height: 34px; width: auto;" />
+      </a>
+      <nav class="nav-links">
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Case Studies</a>
+        <a href="#">Resources</a>
+        <a href="#">Pricing</a>
+      </nav>
+      <a href="#" class="btn btn-brand" style="padding: 9px 20px;">Book a Call →</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section style="padding: 88px 0 80px; position: relative; overflow: hidden;">
+  <div class="topo"></div>
+  <div class="container" style="text-align: center; position: relative; z-index: 1;">
+    <div class="badge fade-up" style="margin-bottom: 24px;">
+      <span class="badge-dot"></span>
+      GTM Systems · Product Marketing · AI Automation
+    </div>
+    <h1 class="fade-up delay-1" style="max-width: 760px; margin: 0 auto 24px;">
+      Strategy + Execution.<br><em>All in One</em> GTM System.
+    </h1>
+    <p class="fade-up delay-2" style="font-family: var(--font-sans); font-size: 1.1875rem; color: var(--ink-2); max-width: 540px; margin: 0 auto 40px; line-height: 1.7; font-weight: 400;">
+      We unify product marketing, GTM engineering, founder-led content, and AI automation into a single revenue-driving engine.
+    </p>
+    <div class="fade-up delay-3" style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px;">
+      <a href="#" class="btn btn-brand" style="font-size: 1rem; padding: 13px 26px;">Build Your GTM System →</a>
+      <a href="#" class="btn btn-outline" style="font-size: 1rem; padding: 13px 26px;">See Case Studies</a>
+    </div>
+
+    <div class="video-card fade-up delay-4" style="max-width: 900px; margin: 0 auto;">
+      <img src="https://placehold.co/900x506/0E1412/0E1412" alt="OneGTM Lab demo" />
+      <div class="video-overlay">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
+          <div class="play-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="margin-left:3px;"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+          <span style="color: rgba(255,255,255,0.55); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;">Watch a Live Demo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGO BAR / CLIENTS -->
+<section style="padding: 36px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255,255,255,0.5);">
+  <div class="container">
+    <p style="text-align: center; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); margin-bottom: 28px;">
+      Trusted by 40+ founders and GTM operators
+    </p>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap;">
+      <span class="logo-bar-item">Endor Labs</span>
+      <span class="logo-bar-item">Vorlon</span>
+      <span class="logo-bar-item">N8N</span>
+      <span class="logo-bar-item">Flowace AI</span>
+      <span class="logo-bar-item">Techgropse</span>
+      <span class="logo-bar-item">nREV</span>
+      <span class="logo-bar-item">Nyuway</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4 SERVICES SECTION -->
+<section style="padding: 100px 0;">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 64px;">
+      <span class="eyebrow">What We Do</span>
+      <h2>Four disciplines.<br><em>One integrated</em> engine.</h2>
+      <p style="font-size: 1.0625rem; color: var(--ink-2); margin-top: 18px; line-height: 1.7; max-width: 540px; margin-left: auto; margin-right: auto;">
+        Stop duct-taping growth systems together. OneGTM Lab runs every layer of your GTM — in sync, from day one.
+      </p>
+    </div>
+    <div class="grid-3" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+
+      <div class="card-tinted t-mint" style="display: flex; flex-direction: column; gap: 16px;">
+        <span class="pill pill-mint">Layer 1 — Core</span>
+        <h3 style="color: var(--mint-700); font-family: var(--font-display); font-size: 1.5rem; margin: 0;"><em style="color: var(--mint-700);">Product</em> Marketing</h3>
+        <p style="color: var(--ink-2); font-size: 0.9375rem; line-height: 1.7; margin: 0;">
+          Everything starts here. Get positioning wrong and the other layers amplify garbage. We lock messaging, ICP, and competitive narrative first.
+        </p>
+        <ul class="arrows mint" style="margin-top: 4px;">
+          <li>ICP research &amp; competitive analysis</li>
+          <li>Positioning, messaging &amp; narrative</li>
+          <li>Sales decks, battle cards, one-pagers</li>
+          <li>Product launch campaigns</li>
+        </ul>
+      </div>
+
+      <div class="card-tinted t-lav" style="display: flex; flex-direction: column; gap: 16px;">
+        <span class="pill pill-lav">Layer 2 — Amplifier</span>
+        <h3 style="color: var(--lav-700); font-family: var(--font-display); font-size: 1.5rem; margin: 0;"><em style="color: var(--lav-700);">GTM</em> Engineering</h3>
+        <p style="color: var(--ink-2); font-size: 0.9375rem; line-height: 1.7; margin: 0;">
+          Signals → routing → outbound → revenue. We build the infrastructure that turns intent data into booked pipeline automatically.
+        </p>
+        <ul class="arrows lav" style="margin-top: 4px;">
+          <li>Email infrastructure &amp; warmup</li>
+          <li>Clay-powered data enrichment</li>
+          <li>Signal-based outbound sequences</li>
+          <li>Lead scoring &amp; pipeline automation</li>
+        </ul>
+      </div>
+
+      <div class="card-tinted t-butter" style="display: flex; flex-direction: column; gap: 16px;">
+        <span class="pill pill-butter">Layer 3 — Activator</span>
+        <h3 style="color: var(--butter-700); font-family: var(--font-display); font-size: 1.5rem; margin: 0;"><em style="color: var(--butter-700);">Founder-Led</em> Content</h3>
+        <p style="color: var(--ink-2); font-size: 0.9375rem; line-height: 1.7; margin: 0;">
+          Your personal brand is your most durable growth channel. We build LinkedIn authority that compounds — ghostwritten to your voice.
+        </p>
+        <ul class="arrows butter" style="margin-top: 4px;">
+          <li>LinkedIn profile &amp; authority transformation</li>
+          <li>Weekly ghostwritten posts</li>
+          <li>Strategic engagement with target buyers</li>
+          <li>Substack &amp; newsletter strategy</li>
+        </ul>
+      </div>
+
+      <div class="card-tinted t-sky" style="display: flex; flex-direction: column; gap: 16px;">
+        <span class="pill pill-sky">Layer 4 — Engine</span>
+        <h3 style="color: var(--sky-700); font-family: var(--font-display); font-size: 1.5rem; margin: 0;"><em style="color: var(--sky-700);">AI Automation</em> &amp; Ops</h3>
+        <p style="color: var(--ink-2); font-size: 0.9375rem; line-height: 1.7; margin: 0;">
+          Automation isn't a feature — it's what makes everything else compound. Custom AI agents and n8n workflows that run 24/7.
+        </p>
+        <ul class="arrows sky" style="margin-top: 4px;">
+          <li>Custom AI agents &amp; voice assistants</li>
+          <li>n8n workflow automation</li>
+          <li>CRM sync &amp; auto-generated dashboards</li>
+          <li>Multi-LLM routing systems</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS DIAGRAM -->
+<section style="padding: 100px 0; background: rgba(255,255,255,0.6); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 68px;">
+      <span class="eyebrow">The System</span>
+      <h2>How we move accounts<br>from <em>cold to closed</em></h2>
+      <p style="font-size: 1.0625rem; color: var(--ink-2); margin-top: 18px; line-height: 1.7; max-width: 520px; margin-left: auto; margin-right: auto;">
+        Every stage of the buyer journey is wired together. No gaps. No manual handoffs.
+      </p>
+    </div>
+
+    <!-- Funnel visualization -->
+    <div style="max-width: 860px; margin: 0 auto 64px;">
+      <div class="funnel-bar">
+        <div class="f-0"><div style="font-size:9px; opacity:.55; margin-bottom:4px;">100%</div><b style="font-family:var(--font-display); font-size:12px; display:block;">Awareness</b></div>
+        <div class="f-1"><div style="font-size:9px; opacity:.55; margin-bottom:4px;">68%</div><b style="font-family:var(--font-display); font-size:12px; display:block;">Prospect</b></div>
+        <div class="f-2"><div style="font-size:9px; opacity:.55; margin-bottom:4px;">32%</div><b style="font-family:var(--font-display); font-size:12px; display:block;">Connect</b></div>
+        <div class="f-3"><div style="font-size:9px; opacity:.55; margin-bottom:4px;">16%</div><b style="font-family:var(--font-display); font-size:12px; display:block;">Demo</b></div>
+        <div class="f-4"><div style="font-size:9px; opacity:.55; margin-bottom:4px;">8%</div><b style="font-family:var(--font-display); font-size:12px; display:block;">Proposal</b></div>
+        <div class="f-5"><div style="font-size:9px; opacity:.55; margin-bottom:4px;">3%</div><b style="font-family:var(--font-display); font-size:12px; display:block;">Close</b></div>
+        <div class="f-6"><div style="font-size:9px; opacity:.55; margin-bottom:4px;">1.5%</div><b style="font-family:var(--font-display); font-size:12px; display:block;">Won</b></div>
+      </div>
+      <p style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); text-align: center; margin-top: 12px;">OneGTM Lab optimizes every stage — green is healthy, red is a leak we fix</p>
+    </div>
+
+    <div class="hub-row" style="display: flex; align-items: center; justify-content: center; gap: 64px; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 34px; align-items: flex-end;">
+        <div style="text-align: right;">
+          <div style="font-family: var(--font-display); font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: var(--ink);">Attract</div>
+          <div style="font-size: 0.875rem; color: var(--ink-2); max-width: 200px; line-height: 1.6;">Content, LinkedIn &amp; thought leadership that puts you on the radar</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-family: var(--font-display); font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: var(--ink);">Engage</div>
+          <div style="font-size: 0.875rem; color: var(--ink-2); max-width: 200px; line-height: 1.6;">Case studies, email nurture &amp; retargeting that build trust</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-family: var(--font-display); font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: var(--ink);">Signal</div>
+          <div style="font-size: 0.875rem; color: var(--ink-2); max-width: 200px; line-height: 1.6;">Intent-based outreach timed perfectly to buying moments</div>
+        </div>
+      </div>
+
+      <div class="hub-outer">
+        <div class="hub-mid">
+          <div class="hub-core">
+            <span class="hub-core-label">ONE</span>
+            <span class="hub-core-title">GTM</span>
+            <span class="hub-core-title" style="color: #A8D4C5;">Lab</span>
+            <span class="hub-core-label">Engine</span>
+          </div>
+          <div class="hub-node" style="background: var(--mint-700); top: -11px; left: 50%; transform: translateX(-50%);"></div>
+          <div class="hub-node" style="background: var(--lav-700); bottom: -11px; left: 50%; transform: translateX(-50%);"></div>
+          <div class="hub-node" style="background: var(--butter-700); left: -11px; top: 50%; transform: translateY(-50%);"></div>
+          <div class="hub-node" style="background: var(--sky-700); right: -11px; top: 50%; transform: translateY(-50%);"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 34px; align-items: flex-start;">
+        <div>
+          <div style="font-family: var(--font-display); font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: var(--ink);">Convert</div>
+          <div style="font-size: 0.875rem; color: var(--ink-2); max-width: 200px; line-height: 1.6;">Demos, proposals &amp; objection-handling sequences that close</div>
+        </div>
+        <div>
+          <div style="font-family: var(--font-display); font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: var(--ink);">Retain</div>
+          <div style="font-size: 0.875rem; color: var(--ink-2); max-width: 200px; line-height: 1.6;">Onboarding flows &amp; expansion triggers that reduce churn</div>
+        </div>
+        <div>
+          <div style="font-family: var(--font-display); font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: var(--ink);">Expand</div>
+          <div style="font-size: 0.875rem; color: var(--ink-2); max-width: 200px; line-height: 1.6;">Upsell &amp; referral systems that compound growth month over month</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DARK ENGAGEMENT MODELS -->
+<section style="background: var(--ink); padding: 104px 0;">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 64px;">
+      <span class="eyebrow" style="color: rgba(255,255,255,0.38);">Engagement Models</span>
+      <h2 style="color: #fff; max-width: 640px; margin: 0 auto 18px;">
+        Find the model that fits<br><em>where you are</em> right now
+      </h2>
+      <p style="color: rgba(255,255,255,0.5); font-size: 1.0625rem; max-width: 480px; margin: 0 auto; line-height: 1.7;">
+        No bloated retainers. We match the engagement to your stage and velocity.
+      </p>
+    </div>
+    <div class="grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; max-width: 960px; margin: 0 auto;">
+
+      <div class="card-dark">
+        <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.38); margin-bottom: 16px;">Foundation</div>
+        <div style="font-family: var(--font-display); font-size: 2.75rem; font-weight: 600; color: #fff; letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px;">
+          Sprint<span style="font-size: 1rem; color: rgba(255,255,255,0.35); font-weight: 400; font-family: var(--font-sans);"> · 6 wks</span>
+        </div>
+        <p style="color: rgba(255,255,255,0.5); font-size: 0.9375rem; line-height: 1.65; margin-top: 14px; margin-bottom: 24px;">
+          Core positioning locked, first outbound sequence live, LinkedIn transformed. Traction in week one.
+        </p>
+        <ul class="arrows" style="margin-bottom: 28px; gap: 10px;">
+          <li style="color: rgba(255,255,255,0.6); padding-left: 18px;"><span style="position:absolute; left:0; color: var(--brand);">→</span>PMM foundation &amp; messaging</li>
+          <li style="color: rgba(255,255,255,0.6); padding-left: 18px;"><span style="position:absolute; left:0; color: var(--brand);">→</span>Outbound setup &amp; first campaign</li>
+          <li style="color: rgba(255,255,255,0.6); padding-left: 18px;"><span style="position:absolute; left:0; color: var(--brand);">→</span>LinkedIn profile transformation</li>
+        </ul>
+        <a href="#" class="btn btn-outline-white" style="width: 100%; justify-content: center;">Book a Call →</a>
+      </div>
+
+      <div style="background: var(--brand); border: 1px solid var(--brand); border-radius: var(--r-lg); padding: 32px; position: relative;">
+        <div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--marker-yellow); color: var(--brand-ink); font-family: var(--font-mono); font-size: 9.5px; font-weight: 600; padding: 4px 13px; border-radius: 100px; white-space: nowrap; letter-spacing: 0.08em; text-transform: uppercase;">Most Popular</div>
+        <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.6); margin-bottom: 16px;">Full System</div>
+        <div style="font-family: var(--font-display); font-size: 2.75rem; font-weight: 600; color: #fff; letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px;">
+          Growth<span style="font-size: 1rem; color: rgba(255,255,255,0.6); font-weight: 400; font-family: var(--font-sans);"> · ongoing</span>
+        </div>
+        <p style="color: rgba(255,255,255,0.82); font-size: 0.9375rem; line-height: 1.65; margin-top: 14px; margin-bottom: 24px;">
+          All four layers running in concert. PMM + GTM Eng + content + AI ops compounding together.
+        </p>
+        <ul class="arrows" style="margin-bottom: 28px; gap: 10px;">
+          <li style="color: rgba(255,255,255,0.9); padding-left: 18px;"><span style="position:absolute; left:0; color: #fff;">→</span>All 4 service layers</li>
+          <li style="color: rgba(255,255,255,0.9); padding-left: 18px;"><span style="position:absolute; left:0; color: #fff;">→</span>Dedicated strategist &amp; GTM team</li>
+          <li style="color: rgba(255,255,255,0.9); padding-left: 18px;"><span style="position:absolute; left:0; color: #fff;">→</span>Weekly reporting &amp; CRM sync</li>
+          <li style="color: rgba(255,255,255,0.9); padding-left: 18px;"><span style="position:absolute; left:0; color: #fff;">→</span>Slack access &amp; async support</li>
+        </ul>
+        <a href="#" class="btn" style="width: 100%; justify-content: center; background: #fff; color: var(--brand-ink); border-color: #fff; font-weight: 600;">Build Your GTM System →</a>
+      </div>
+
+      <div class="card-dark">
+        <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.38); margin-bottom: 16px;">Enterprise</div>
+        <div style="font-family: var(--font-display); font-size: 2.75rem; font-weight: 600; color: #fff; letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px;">Custom</div>
+        <p style="color: rgba(255,255,255,0.5); font-size: 0.9375rem; line-height: 1.65; margin-top: 14px; margin-bottom: 24px;">
+          Bespoke GTM infrastructure for teams with complex sales motions, large TAMs, or high-volume outbound pipelines.
+        </p>
+        <ul class="arrows" style="margin-bottom: 28px; gap: 10px;">
+          <li style="color: rgba(255,255,255,0.6); padding-left: 18px;"><span style="position:absolute; left:0; color: var(--brand);">→</span>Custom build &amp; architecture</li>
+          <li style="color: rgba(255,255,255,0.6); padding-left: 18px;"><span style="position:absolute; left:0; color: var(--brand);">→</span>SLA &amp; dedicated team</li>
+          <li style="color: rgba(255,255,255,0.6); padding-left: 18px;"><span style="position:absolute; left:0; color: var(--brand);">→</span>White-glove onboarding</li>
+        </ul>
+        <a href="#" class="btn btn-outline-white" style="width: 100%; justify-content: center;">Contact Sales →</a>
+      </div>
+
+    </div>
+
+    <!-- ONEGTM CLUB banner -->
+    <div style="max-width: 960px; margin: 32px auto 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--r-lg); padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 6px;">Free Community</div>
+        <div style="font-family: var(--font-display); font-size: 1.1875rem; font-weight: 600; color: #fff;">Join the <em>ONEGTM CLUB</em></div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.5); margin-top: 4px;">The happiest GTM community on Slack — templates, frameworks &amp; peer learning.</div>
+      </div>
+      <a href="#" class="btn btn-outline-white" style="flex-shrink: 0;">Join Free →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="padding: 100px 0; border-top: 1px solid var(--line);">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 64px;">
+      <span class="eyebrow">Social Proof</span>
+      <h2>Don't take our word for it.<br><em>Hear it</em> from them.</h2>
+      <p style="font-size: 1.0625rem; color: var(--ink-2); margin-top: 18px; line-height: 1.7;">Real GTM leaders. Real pipeline. Real results.</p>
+    </div>
+    <div class="grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;">
+
+      <div class="tcard">
+        <div class="tcard-header">
+          <img class="tcard-avatar" src="https://placehold.co/38x38/0C7A5E/CDEBDB?text=ET" alt="ET" />
+          <div>
+            <div class="tcard-name">Elias Terman</div>
+            <div class="tcard-role">VP Marketing · Vorlon</div>
+          </div>
+          <div style="margin-left: auto; color: #0b7bfa; font-size: 1.125rem; font-weight: 800;">in</div>
+        </div>
+        <p class="tcard-quote">"Hard to find a growth agency that integrates product marketing, go-to-market engineering, and business understanding. I recommend them without hesitation."</p>
+        <div class="tcard-stats">
+          <div><div class="tcard-stat-val">4.6x</div><div class="tcard-stat-label">Revenue growth</div></div>
+          <div><div class="tcard-stat-val">6 mo</div><div class="tcard-stat-label">Time to result</div></div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-header">
+          <img class="tcard-avatar" src="https://placehold.co/38x38/2A4A9B/D4DEF3?text=EW" alt="EW" />
+          <div>
+            <div class="tcard-name">Eric Wong</div>
+            <div class="tcard-role">VP RevOps · Endor Labs</div>
+          </div>
+          <div style="margin-left: auto; color: #0b7bfa; font-size: 1.125rem; font-weight: 800;">in</div>
+        </div>
+        <p class="tcard-quote">"ONEGTMLAB streamlined our prospecting data engine and layered domain expertise in cybersecurity for targeted outreach. The signal-based approach changed how we operate."</p>
+        <div class="tcard-stats">
+          <div><div class="tcard-stat-val">1K+</div><div class="tcard-stat-label">Calls booked</div></div>
+          <div><div class="tcard-stat-val">3mo</div><div class="tcard-stat-label">To full pipeline</div></div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-header">
+          <img class="tcard-avatar" src="https://placehold.co/38x38/6E5A07/F6EBA4?text=AH" alt="AH" />
+          <div>
+            <div class="tcard-name">Alex Hernandez</div>
+            <div class="tcard-role">Founder · Jobgether</div>
+          </div>
+          <div style="margin-left: auto; color: #1d9bf0; font-weight: 700; font-size: 1rem;">𝕏</div>
+        </div>
+        <p class="tcard-quote">"Megha quickly understood our business tone and created engaging content that actually converted. More strategist than writer — she goes deep to understand your audience."</p>
+        <div class="tcard-stats">
+          <div><div class="tcard-stat-val">28K</div><div class="tcard-stat-label">Avg. likes/post</div></div>
+          <div><div class="tcard-stat-val">20+</div><div class="tcard-stat-label">Inquiries/month</div></div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-header">
+          <img class="tcard-avatar" src="https://placehold.co/38x38/5B2E9F/E4D9F4?text=AC" alt="AC" />
+          <div>
+            <div class="tcard-name">Artem Chetverykov</div>
+            <div class="tcard-role">Co-Founder · B2B SaaS</div>
+          </div>
+          <div style="margin-left: auto; color: #0b7bfa; font-size: 1.125rem; font-weight: 800;">in</div>
+        </div>
+        <p class="tcard-quote">"Finally a team that thinks in systems, not campaigns. They built GTM infrastructure that gets better every month — automatically compounding."</p>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-header">
+          <img class="tcard-avatar" src="https://placehold.co/38x38/8A4B10/F8D9B3?text=MS" alt="MS" />
+          <div>
+            <div class="tcard-name">Mohit Sagar</div>
+            <div class="tcard-role">CEO · GazMin Motors</div>
+          </div>
+          <div style="margin-left: auto; color: #1d9bf0; font-weight: 700; font-size: 1rem;">𝕏</div>
+        </div>
+        <p class="tcard-quote">"Extremely happy with deadline adherence and quality exceeding expectations. Content engine exceeded what we thought possible in the timeline."</p>
+        <div class="tcard-stats">
+          <div><div class="tcard-stat-val">200+</div><div class="tcard-stat-label">Assets in 3mo</div></div>
+          <div><div class="tcard-stat-val">7K+</div><div class="tcard-stat-label">New followers</div></div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-header">
+          <img class="tcard-avatar" src="https://placehold.co/38x38/556212/DDE4AE?text=GT" alt="GT" />
+          <div>
+            <div class="tcard-name">GTM Director</div>
+            <div class="tcard-role">VP Sales · Series A SaaS</div>
+          </div>
+          <div style="margin-left: auto; color: #0b7bfa; font-size: 1.125rem; font-weight: 800;">in</div>
+        </div>
+        <p class="tcard-quote">"We went from zero structured outbound to 15+ meetings/week in 8 weeks. The signal-based personalization is genuinely different. ROI was clear by month one."</p>
+        <div class="tcard-stats">
+          <div><div class="tcard-stat-val">15+</div><div class="tcard-stat-label">Meetings/week</div></div>
+          <div><div class="tcard-stat-val">8wk</div><div class="tcard-stat-label">Time to pipeline</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section style="padding: 100px 0; border-top: 1px solid var(--line); background: rgba(255,255,255,0.5);">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 64px;">
+      <span class="eyebrow">Results</span>
+      <h2>The <em>numbers</em> that matter</h2>
+    </div>
+    <div class="grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px;">
+      <div class="stat-card">
+        <div class="stat-val">40<em>+</em></div>
+        <div class="stat-label">Founders &amp; GTM operators served</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">4.6<em>x</em></div>
+        <div class="stat-label">Revenue growth (N8N, 6 months)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">1K<em>+</em></div>
+        <div class="stat-label">Call bookings generated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">200<em>+</em></div>
+        <div class="stat-label">Marketing assets in 3 months</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section style="padding: 100px 0; border-top: 1px solid var(--line);">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 68px;">
+      <span class="eyebrow">Onboarding</span>
+      <h2>Your results timeline:<br><em>what happens</em> after you start</h2>
+      <p style="font-size: 1.0625rem; color: var(--ink-2); margin-top: 18px; line-height: 1.7; max-width: 500px; margin-left: auto; margin-right: auto;">
+        No guessing. Here's exactly what to expect — week by week, month by month.
+      </p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="background: var(--mint-700);">Wk 1</div>
+        <div class="tl-body">
+          <div class="tl-title">Positioning &amp; Messaging Locked</div>
+          <div class="tl-desc">Core ICP, positioning narrative, and competitive messaging is finalized and approved. The foundation every other layer runs on.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background: var(--sky-700);">Wk 2</div>
+        <div class="tl-body">
+          <div class="tl-title">Website Copy &amp; LinkedIn Transformation</div>
+          <div class="tl-desc">Website wireframes and copy drafted. LinkedIn profile overhauled. Outbound infrastructure set up and warmed. First sequences written.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background: var(--lav-700);">Mo 1</div>
+        <div class="tl-body">
+          <div class="tl-title">100+ Assets Delivered</div>
+          <div class="tl-desc">Battle cards, sales decks, one-pagers, email templates, and LinkedIn posts are live. First outbound campaign running. Data flowing to dashboard.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background: var(--butter-700);">Mo 2–3</div>
+        <div class="tl-body">
+          <div class="tl-title">Optimization &amp; Scale</div>
+          <div class="tl-desc">A/B tests run across sequences and content. Best performers doubled. Signal-based routing refined. Pipeline begins compounding.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background: var(--peach-700);">Mo 4–6</div>
+        <div class="tl-body">
+          <div class="tl-title">Compounding Revenue Engine</div>
+          <div class="tl-desc">All four layers working together. Inbound picking up from content. Outbound at full capacity. ROI crystal clear. System compounds without you.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section style="background: var(--ink); padding: 104px 0;">
+  <div class="container" style="text-align: center; position: relative; overflow: hidden;">
+    <div class="topo" style="opacity: 0.25;"></div>
+    <div style="position: relative; z-index: 1;">
+      <span class="pill" style="border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); margin-bottom: 24px; display: inline-flex;">Get Your Free GTM Diagnosis</span>
+      <h2 style="color: #fff; max-width: 600px; margin: 0 auto 20px;">
+        Ready to build a <span class="hi-mint">GTM system</span><br>that actually compounds?
+      </h2>
+      <p style="color: rgba(255,255,255,0.5); font-size: 1.0625rem; max-width: 460px; margin: 0 auto 44px; line-height: 1.7;">
+        Book a free 30-minute strategy call. No pitch, no pressure — just a clear plan for what's possible.
+      </p>
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a href="#" class="btn btn-brand" style="font-size: 1rem; padding: 14px 28px;">Build Your GTM System →</a>
+        <a href="#" class="btn btn-outline-white" style="font-size: 1rem; padding: 14px 28px;">Join ONEGTM CLUB Free</a>
+      </div>
+      <!-- Team pill -->
+      <div style="margin-top: 52px; display: flex; align-items: center; justify-content: center; gap: 12px;">
+        <div style="display: flex; gap: -6px;">
+          <img src="https://placehold.co/36x36/0C7A5E/CDEBDB?text=S" alt="" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);" />
+          <img src="https://placehold.co/36x36/5B2E9F/E4D9F4?text=M" alt="" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);margin-left:-10px;" />
+          <img src="https://placehold.co/36x36/2A4A9B/D4DEF3?text=J" alt="" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);margin-left:-10px;" />
+        </div>
+        <span style="font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4);">Sachin, Megha &amp; team are ready</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background: #090D0C; padding: 64px 0 40px; border-top: 1px solid rgba(255,255,255,0.06);">
+  <div class="container">
+    <div class="grid-footer" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 56px;">
+      <div>
+        <img src="brand_assets/OGL Full Logo.png" alt="OneGTM Lab" style="height: 30px; width: auto; margin-bottom: 16px; opacity: 0.85;" />
+        <p style="color: rgba(255,255,255,0.38); font-size: 0.9375rem; line-height: 1.7; max-width: 260px;">
+          Building the GTM systems that power the next generation of B2B revenue.
+        </p>
+        <div style="margin-top: 20px; display: flex; gap: 16px;">
+          <a href="#" style="font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); text-decoration: none;">LinkedIn</a>
+          <a href="#" style="font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); text-decoration: none;">Twitter / X</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.28); margin-bottom: 18px;">Company</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">About Us</a>
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">Case Studies</a>
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">Blog</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.28); margin-bottom: 18px;">Services</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">Product Marketing</a>
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">GTM Engineering</a>
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">Founder Content</a>
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">AI Automation</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.28); margin-bottom: 18px;">Resources</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">GTM Playbooks</a>
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">ONEGTM CLUB</a>
+          <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9375rem;">Free Diagnosis</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+      <div style="color: rgba(255,255,255,0.22); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;">© 2026 OneGTM Lab. All rights reserved.</div>
+      <div style="display: flex; gap: 22px;">
+        <a href="#" style="color: rgba(255,255,255,0.22); text-decoration: none; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;">Privacy</a>
+        <a href="#" style="color: rgba(255,255,255,0.22); text-decoration: none; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OneGTMLab — Visual System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500;1,9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ------ Surface / ink ------ */
+    --bg: #F1F5E8;               /* page: green-tinted ivory */
+    --bg-2: #E9F0DC;             /* stronger wash for banners */
+    --paper: #FFFFFF;            /* white cards */
+    --ink: #0E1412;              /* primary text */
+    --ink-2: #2B332F;            /* secondary text */
+    --ink-3: #5F6B63;            /* tertiary/muted */
+    --line: #D9DCCF;             /* hairlines */
+    --line-strong: #B9BEAC;
+
+    /* ------ Brand ------ */
+    --brand: #0C7A5E;            /* signature teal-green (headings, highlights) */
+    --brand-ink: #064A3B;        /* darker text on pale mint */
+    --brand-soft: #CDEBDB;       /* mint fill */
+    --brand-soft-2: #E6F5EC;     /* mint wash */
+
+    /* ------ Accent hues (pastel "tinted paper" family) ------ */
+    /* each hue has: -50 wash, -100 fill, -200 border/pill, -700 ink */
+    --lavender-50:#F1ECFA; --lavender-100:#E4D9F4; --lavender-200:#C8B6E8; --lavender-700:#5B2E9F;
+    --sky-50:#E8EEFA;      --sky-100:#D4DEF3;      --sky-200:#A9BDE5;      --sky-700:#2A4A9B;
+    --mint-50:#E6F5EC;     --mint-100:#CDEBDB;     --mint-200:#9DD5BA;     --mint-700:#0C7A5E;
+    --butter-50:#FBF5D5;   --butter-100:#F6EBA4;   --butter-200:#EADF7B;   --butter-700:#6E5A07;
+    --blush-50:#FCE9EC;    --blush-100:#F8D3D9;    --blush-200:#EFA5B0;    --blush-700:#9E1B2C;
+    --peach-50:#FCECD8;    --peach-100:#F8D9B3;    --peach-200:#EEB77C;    --peach-700:#8A4B10;
+    --lilac-50:#F7E9F5;    --lilac-100:#EFD3EC;    --lilac-200:#DDA8D8;    --lilac-700:#7A1F6F;
+    --olive-50:#EEF1D6;    --olive-100:#DDE4AE;    --olive-200:#BFCB75;    --olive-700:#556212;
+
+    /* ------ Highlighter (title marker) ------ */
+    --marker-yellow: #F3EE86;
+    --marker-mint:   #B8E9CE;
+    --marker-lavender:#D9C6F0;
+
+    /* ------ Geometry ------ */
+    --r-xs: 6px;
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+    --r-pill: 999px;
+
+    --shadow-card: 0 1px 0 rgba(20,30,20,0.04), 0 8px 24px rgba(20,30,20,0.05);
+    --shadow-pop:  0 2px 0 rgba(20,30,20,0.04), 0 16px 40px rgba(20,30,20,0.08);
+
+    --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 85% -10%, #E3EEC8 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, #DDEBCD 0%, transparent 55%),
+      var(--bg);
+    min-height: 100vh;
+  }
+
+  /* Topographic dashed rings — signature background motif */
+  .topo {
+    position: absolute; inset: 0; pointer-events: none; opacity: .45;
+    background-image:
+      radial-gradient(circle at 10% 100%, transparent 180px, rgba(12,122,94,0.10) 181px, rgba(12,122,94,0.10) 182px, transparent 183px),
+      radial-gradient(circle at 10% 100%, transparent 260px, rgba(12,122,94,0.08) 261px, rgba(12,122,94,0.08) 262px, transparent 263px),
+      radial-gradient(circle at 10% 100%, transparent 340px, rgba(12,122,94,0.06) 341px, rgba(12,122,94,0.06) 342px, transparent 343px);
+  }
+
+  /* -------- Layout -------- */
+  .shell { max-width: 1240px; margin: 0 auto; padding: 56px 40px 120px; position: relative; }
+  header.hero { margin-bottom: 56px; }
+  .eyebrow { display: inline-block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); padding: 6px 12px; border: 1px solid var(--line); border-radius: var(--r-pill); background: rgba(255,255,255,.7); }
+  h1.title {
+    font-family: var(--font-display); font-weight: 600; font-size: clamp(56px, 7vw, 92px);
+    line-height: .98; letter-spacing: -.025em; margin: 16px 0 10px; color: var(--ink);
+  }
+  h1.title em { font-style: italic; color: var(--brand); font-weight: 500; }
+  h1.title .hi { background: linear-gradient(transparent 58%, var(--marker-yellow) 58%, var(--marker-yellow) 92%, transparent 92%); padding: 0 .08em; }
+  .lede { max-width: 640px; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+
+  /* -------- Section scaffolding -------- */
+  section { margin-bottom: 64px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px dashed var(--line-strong); }
+  .sec-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 34px; letter-spacing: -.02em; margin: 0; color: var(--ink); }
+  .sec-head h2 em { font-style: italic; color: var(--brand); font-weight: 500; }
+  .sec-head .sec-no { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); letter-spacing: .14em; text-transform: uppercase; }
+
+  .grid { display: grid; gap: 20px; }
+  .g-2 { grid-template-columns: repeat(2, 1fr); }
+  .g-3 { grid-template-columns: repeat(3, 1fr); }
+  .g-4 { grid-template-columns: repeat(4, 1fr); }
+  .g-6 { grid-template-columns: repeat(6, 1fr); }
+  .g-8 { grid-template-columns: repeat(8, 1fr); }
+
+  /* -------- Card primitive -------- */
+  .card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-card);
+  }
+  .card-tinted { border-radius: var(--r-lg); padding: 22px; border: 1px solid transparent; }
+
+  /* -------- Pill labels (eyebrow chips on cards) -------- */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 500;
+    padding: 5px 10px; border-radius: var(--r-pill);
+    background: #fff; color: var(--ink-2); border: 1px solid var(--line);
+  }
+  .pill.solid-dark { background: #0E1412; color: #fff; border-color: #0E1412; }
+  .pill.mint      { background: var(--mint-100); color: var(--mint-700); border-color: var(--mint-200); }
+  .pill.lavender  { background: var(--lavender-100); color: var(--lavender-700); border-color: var(--lavender-200); }
+  .pill.sky       { background: var(--sky-100); color: var(--sky-700); border-color: var(--sky-200); }
+  .pill.butter    { background: var(--butter-100); color: var(--butter-700); border-color: var(--butter-200); }
+  .pill.blush     { background: var(--blush-100); color: var(--blush-700); border-color: var(--blush-200); }
+  .pill.peach     { background: var(--peach-100); color: var(--peach-700); border-color: var(--peach-200); }
+  .pill.lilac     { background: var(--lilac-100); color: var(--lilac-700); border-color: var(--lilac-200); }
+  .pill.olive     { background: var(--olive-100); color: var(--olive-700); border-color: var(--olive-200); }
+
+  /* -------- Tinted paper cards (the infographic DNA) -------- */
+  .t-card { border-radius: var(--r-lg); padding: 22px 22px 24px; border: 1px solid transparent; min-height: 160px; }
+  .t-card .pill { margin-bottom: 14px; }
+  .t-card h3 { font-family: var(--font-display); font-weight: 600; font-size: 24px; line-height: 1.1; letter-spacing: -.01em; margin: 0 0 8px; }
+  .t-card p  { font-size: 14px; line-height: 1.55; color: var(--ink-2); margin: 0; }
+
+  .t-mint      { background: var(--mint-50); border-color: var(--mint-200); }    .t-mint h3 { color: var(--mint-700); }
+  .t-sky       { background: var(--sky-50); border-color: var(--sky-200); }       .t-sky h3 { color: var(--sky-700); }
+  .t-lavender  { background: var(--lavender-50); border-color: var(--lavender-200); } .t-lavender h3 { color: var(--lavender-700); }
+  .t-butter    { background: var(--butter-50); border-color: var(--butter-200); } .t-butter h3 { color: var(--butter-700); }
+  .t-peach     { background: var(--peach-50); border-color: var(--peach-200); }   .t-peach h3 { color: var(--peach-700); }
+  .t-blush     { background: var(--blush-50); border-color: var(--blush-200); }   .t-blush h3 { color: var(--blush-700); }
+  .t-lilac     { background: var(--lilac-50); border-color: var(--lilac-200); }   .t-lilac h3 { color: var(--lilac-700); }
+  .t-olive     { background: var(--olive-50); border-color: var(--olive-200); }   .t-olive h3 { color: var(--olive-700); }
+
+  /* -------- Swatches -------- */
+  .swatch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .swatch { border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); background: #fff; }
+  .swatch .sw-chip { height: 72px; }
+  .swatch .sw-meta { padding: 10px 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .swatch .sw-meta b { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
+  .swatch .sw-meta code { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-3); }
+
+  .ramp { display: grid; grid-template-columns: repeat(4, 1fr); border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); }
+  .ramp > div { padding: 16px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+  .ramp .rlabel { font-family: var(--font-mono); opacity: .7; font-size: 10.5px; }
+
+  /* -------- Type specimen -------- */
+  .type-row { display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px dashed var(--line-strong); align-items: baseline; }
+  .type-row:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  .type-meta b { display: block; color: var(--ink); font-weight: 600; letter-spacing: .02em; text-transform: none; font-size: 12px; margin-bottom: 2px; }
+  .spec-display { font-family: var(--font-display); font-weight: 600; font-size: 64px; line-height: 1; letter-spacing: -.02em; }
+  .spec-display em { font-style: italic; color: var(--brand); font-weight: 500; }
+  .spec-display .hi { background: linear-gradient(transparent 58%, var(--marker-yellow) 58%, var(--marker-yellow) 92%, transparent 92%); padding: 0 .08em; }
+  .spec-h2 { font-family: var(--font-display); font-weight: 600; font-size: 34px; line-height: 1.05; letter-spacing: -.02em; }
+  .spec-h3 { font-family: var(--font-display); font-weight: 600; font-size: 24px; line-height: 1.1; letter-spacing: -.01em; color: var(--brand); }
+  .spec-lede { font-size: 18px; line-height: 1.55; color: var(--ink-2); max-width: 620px; }
+  .spec-body { font-size: 14px; line-height: 1.6; color: var(--ink-2); max-width: 620px; }
+  .spec-mono { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+
+  /* -------- Arrow bullet list -------- */
+  ul.arrows { list-style: none; padding: 0; margin: 0; }
+  ul.arrows li {
+    position: relative; padding: 4px 0 4px 18px; font-size: 13.5px; color: var(--ink-2); line-height: 1.45;
+  }
+  ul.arrows li::before {
+    content: "→"; position: absolute; left: 0; top: 4px; color: currentColor; opacity: .85; font-weight: 600;
+  }
+
+  /* -------- Do / Don't -------- */
+  .dd { display: grid; gap: 10px; }
+  .dd-row { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; line-height: 1.5; }
+  .dd-row .mark {
+    flex: none; width: 20px; height: 20px; border-radius: 5px; display: grid; place-items: center;
+    font-size: 12px; font-weight: 700; margin-top: 1px;
+  }
+  .dd-row.do   .mark { background: var(--mint-100); color: var(--mint-700); }
+  .dd-row.dont .mark { background: var(--blush-100); color: var(--blush-700); }
+
+  /* -------- Numbered stage circles -------- */
+  .stage-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: grid; place-items: center; color: #fff; font-family: var(--font-mono); font-weight: 600; font-size: 12px;
+    border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .stage-mint    { background: var(--mint-700); }
+  .stage-sky     { background: var(--sky-700); }
+  .stage-lav     { background: var(--lavender-700); }
+  .stage-lilac   { background: var(--lilac-700); }
+  .stage-peach   { background: var(--peach-700); }
+  .stage-olive   { background: var(--olive-700); }
+
+  /* -------- Banner (dark section starter) -------- */
+  .banner {
+    background: #0E1412; color: #fff; padding: 12px 18px; border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  }
+  .banner .pill { background: transparent; border-color: rgba(255,255,255,.2); color: #fff; }
+  .banner .title { font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+
+  /* -------- Stat chips -------- */
+  .stat {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--r-pill);
+    padding: 10px 16px; display: inline-flex; align-items: center; gap: 10px;
+  }
+  .stat b { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--ink); }
+  .stat span { font-size: 12px; color: var(--ink-3); }
+
+  /* -------- Flow arrow -------- */
+  .flow-arrow {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: grid; place-items: center; color: var(--ink-3);
+  }
+
+  /* -------- Radii/shadow cards -------- */
+  .token-tile {
+    background: #fff; border: 1px solid var(--line); padding: 16px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .token-tile .demo { height: 64px; background: var(--mint-50); border: 1px dashed var(--mint-200); }
+  .token-tile code { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+  .token-tile b { font-size: 13px; }
+
+  /* -------- Footer signature -------- */
+  .signature { display: flex; justify-content: space-between; align-items: center; padding-top: 30px; border-top: 1px dashed var(--line-strong); margin-top: 40px; }
+  .author { display: flex; align-items: center; gap: 12px; }
+  .author .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--peach-100), var(--lavender-100)); border: 1px solid var(--line); }
+  .author .who { font-family: var(--font-display); font-weight: 600; font-size: 16px; }
+  .author .who em { font-style: italic; font-weight: 500; }
+  .author .what { font-size: 12px; color: var(--ink-3); }
+  .wordmark { font-family: var(--font-display); font-weight: 700; letter-spacing: .02em; font-size: 22px; color: var(--ink); }
+  .wordmark .lab { color: var(--ink); }
+  .wordmark .t { display: inline-block; transform: translateY(-1px); }
+
+  /* -------- Small utility -------- */
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .muted { color: var(--ink-3); }
+  .mono { font-family: var(--font-mono); }
+  .small { font-size: 12px; }
+  .caps { text-transform: uppercase; letter-spacing: .14em; }
+
+  /* Funnel pipeline example */
+  .funnel-bar {
+    display: flex; border-radius: var(--r-pill); overflow: hidden; border: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 11px;
+  }
+  .funnel-bar > div { padding: 10px 14px; color: #1a1a1a; flex: 1; text-align: center; border-right: 1px solid rgba(0,0,0,0.05); }
+  .funnel-bar > div:last-child { border-right: none; }
+  .f-0 { background: #CFEBDB; } .f-1 { background: #DFEFC9; } .f-2 { background: #F1F2BE; }
+  .f-3 { background: #F8E8B0; } .f-4 { background: #F8CFB0; } .f-5 { background: #F4B7B6; } .f-6 { background: #EE9CA6; }
+
+  /* Icon box */
+  .icon-box {
+    width: 36px; height: 36px; border-radius: 10px; background: #fff; border: 1px solid var(--line);
+    display: grid; place-items: center; color: var(--brand);
+  }
+  svg { display: block; }
+
+  /* Pattern strip */
+  .pattern-strip {
+    height: 72px; border-radius: var(--r-md); border: 1px solid var(--line);
+    background-image:
+      radial-gradient(circle at 10px 36px, rgba(12,122,94,.5) 1px, transparent 1.5px),
+      radial-gradient(circle at 30px 36px, rgba(12,122,94,.35) 1px, transparent 1.5px);
+    background-size: 40px 72px; background-color: var(--mint-50);
+  }
+
+</style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topo"></div>
+
+    <!-- ============ HERO ============ -->
+    <header class="hero">
+      <span class="eyebrow">Visual System · v1.0</span>
+      <h1 class="title">A <em>design system</em> for<br/><span class="hi">OneGTMLab</span> artifacts.</h1>
+      <p class="lede">Extracted from the OneGTMLab cheatsheet series — a vocabulary of tinted-paper cards, pill labels, arrow-bullets and a signature teal-green, tuned for founder-led GTM storytelling.</p>
+      <div class="row" style="margin-top: 22px;">
+        <span class="stat"><b>8</b><span>accent hues</span></span>
+        <span class="stat"><b>3</b><span>type roles</span></span>
+        <span class="stat"><b>14</b><span>components</span></span>
+        <span class="stat"><b>1</b><span>brand green</span></span>
+      </div>
+    </header>
+
+    <!-- ============ 01 · FOUNDATIONS ============ -->
+    <section>
+      <div class="sec-head">
+        <h2>01 · <em>Foundations</em></h2>
+        <div class="sec-no">Surface · Ink · Brand</div>
+      </div>
+
+      <div class="grid g-2" style="align-items: stretch;">
+        <div class="card">
+          <span class="pill mint">Surface</span>
+          <h3 class="spec-h3" style="margin: 14px 0 16px;">Tinted ivory, not white.</h3>
+          <div class="ramp">
+            <div style="background: var(--bg);">
+              <span>Page · <code>--bg</code></span><span class="rlabel">#F1F5E8</span>
+            </div>
+            <div style="background: var(--bg-2);">
+              <span>Wash · <code>--bg-2</code></span><span class="rlabel">#E9F0DC</span>
+            </div>
+            <div style="background: var(--paper);">
+              <span>Paper · <code>--paper</code></span><span class="rlabel">#FFFFFF</span>
+            </div>
+            <div style="background: #0E1412; color: #fff;">
+              <span>Ink · <code>--ink</code></span><span class="rlabel" style="color:#A9B2AA;">#0E1412</span>
+            </div>
+          </div>
+          <p class="spec-body" style="margin-top: 16px;">The page is never pure white. A soft green-tinted ivory ties the whole family together; white is reserved for elevated "paper" cards.</p>
+        </div>
+
+        <div class="card" style="background: var(--brand-soft-2); border-color: var(--mint-200);">
+          <span class="pill solid-dark">Brand</span>
+          <h3 class="spec-h3" style="margin: 14px 0 16px;">One green does the heavy lifting.</h3>
+          <div class="swatch-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="swatch"><div class="sw-chip" style="background: var(--brand);"></div><div class="sw-meta"><b>Brand</b><code>#0C7A5E</code></div></div>
+            <div class="swatch"><div class="sw-chip" style="background: var(--brand-ink);"></div><div class="sw-meta"><b>Ink</b><code>#064A3B</code></div></div>
+            <div class="swatch"><div class="sw-chip" style="background: var(--brand-soft);"></div><div class="sw-meta"><b>Soft</b><code>#CDEBDB</code></div></div>
+          </div>
+          <p class="spec-body" style="margin-top: 16px;">The OneGTMLab teal-green is the only heroic color — used for italic display accents, primary icons, and the logo lockup. Everything else is a supporting pastel.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 · ACCENT FAMILY ============ -->
+    <section>
+      <div class="sec-head">
+        <h2>02 · <em>The accent family</em></h2>
+        <div class="sec-no">8 pastel hues × 4 stops</div>
+      </div>
+
+      <div class="grid g-4">
+        <!-- Each hue: 50 / 100 / 200 / 700 -->
+        <!-- Mint -->
+        <div class="card-tinted t-mint">
+          <span class="pill mint">Mint · Brand</span>
+          <h3 style="font-family:var(--font-display); font-weight:600; font-size:20px; margin:10px 0 14px; color:var(--mint-700);">Primary · Success · Growth</h3>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="height:44px; border-radius:8px; background:var(--mint-50); border:1px solid var(--mint-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--mint-100);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--mint-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--mint-700);"></div>
+          </div>
+          <div class="mono small muted" style="margin-top:10px; display:flex; justify-content:space-between;"><span>50</span><span>100</span><span>200</span><span>700</span></div>
+        </div>
+
+        <div class="card-tinted t-lavender">
+          <span class="pill lavender">Lavender</span>
+          <h3 style="font-family:var(--font-display); font-weight:600; font-size:20px; margin:10px 0 14px; color:var(--lavender-700);">PMF · Strategy · System</h3>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="height:44px; border-radius:8px; background:var(--lavender-50); border:1px solid var(--lavender-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--lavender-100);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--lavender-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--lavender-700);"></div>
+          </div>
+          <div class="mono small muted" style="margin-top:10px; display:flex; justify-content:space-between;"><span>50</span><span>100</span><span>200</span><span>700</span></div>
+        </div>
+
+        <div class="card-tinted t-sky">
+          <span class="pill sky">Sky</span>
+          <h3 style="font-family:var(--font-display); font-weight:600; font-size:20px; margin:10px 0 14px; color:var(--sky-700);">Signals · Data · Proof</h3>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="height:44px; border-radius:8px; background:var(--sky-50); border:1px solid var(--sky-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--sky-100);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--sky-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--sky-700);"></div>
+          </div>
+          <div class="mono small muted" style="margin-top:10px; display:flex; justify-content:space-between;"><span>50</span><span>100</span><span>200</span><span>700</span></div>
+        </div>
+
+        <div class="card-tinted t-butter">
+          <span class="pill butter">Butter</span>
+          <h3 style="font-family:var(--font-display); font-weight:600; font-size:20px; margin:10px 0 14px; color:var(--butter-700);">KPIs · Money · Focus</h3>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="height:44px; border-radius:8px; background:var(--butter-50); border:1px solid var(--butter-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--butter-100);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--butter-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--butter-700);"></div>
+          </div>
+          <div class="mono small muted" style="margin-top:10px; display:flex; justify-content:space-between;"><span>50</span><span>100</span><span>200</span><span>700</span></div>
+        </div>
+
+        <div class="card-tinted t-peach">
+          <span class="pill peach">Peach</span>
+          <h3 style="font-family:var(--font-display); font-weight:600; font-size:20px; margin:10px 0 14px; color:var(--peach-700);">Ops · Workflow · Warmth</h3>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="height:44px; border-radius:8px; background:var(--peach-50); border:1px solid var(--peach-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--peach-100);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--peach-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--peach-700);"></div>
+          </div>
+          <div class="mono small muted" style="margin-top:10px; display:flex; justify-content:space-between;"><span>50</span><span>100</span><span>200</span><span>700</span></div>
+        </div>
+
+        <div class="card-tinted t-blush">
+          <span class="pill blush">Blush</span>
+          <h3 style="font-family:var(--font-display); font-weight:600; font-size:20px; margin:10px 0 14px; color:var(--blush-700);">Leaks · Loss · Warning</h3>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="height:44px; border-radius:8px; background:var(--blush-50); border:1px solid var(--blush-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--blush-100);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--blush-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--blush-700);"></div>
+          </div>
+          <div class="mono small muted" style="margin-top:10px; display:flex; justify-content:space-between;"><span>50</span><span>100</span><span>200</span><span>700</span></div>
+        </div>
+
+        <div class="card-tinted t-lilac">
+          <span class="pill lilac">Lilac</span>
+          <h3 style="font-family:var(--font-display); font-weight:600; font-size:20px; margin:10px 0 14px; color:var(--lilac-700);">Enablement · People</h3>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="height:44px; border-radius:8px; background:var(--lilac-50); border:1px solid var(--lilac-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--lilac-100);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--lilac-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--lilac-700);"></div>
+          </div>
+          <div class="mono small muted" style="margin-top:10px; display:flex; justify-content:space-between;"><span>50</span><span>100</span><span>200</span><span>700</span></div>
+        </div>
+
+        <div class="card-tinted t-olive">
+          <span class="pill olive">Olive</span>
+          <h3 style="font-family:var(--font-display); font-weight:600; font-size:20px; margin:10px 0 14px; color:var(--olive-700);">Awareness · TOFU</h3>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="height:44px; border-radius:8px; background:var(--olive-50); border:1px solid var(--olive-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--olive-100);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--olive-200);"></div>
+            <div style="height:44px; border-radius:8px; background:var(--olive-700);"></div>
+          </div>
+          <div class="mono small muted" style="margin-top:10px; display:flex; justify-content:space-between;"><span>50</span><span>100</span><span>200</span><span>700</span></div>
+        </div>
+      </div>
+
+      <!-- Highlighter markers -->
+      <div class="grid g-3" style="margin-top: 20px;">
+        <div class="card">
+          <span class="pill butter">Marker · Yellow</span>
+          <div class="spec-h2" style="margin: 14px 0 6px;"><span style="background: linear-gradient(transparent 58%, var(--marker-yellow) 58%, var(--marker-yellow) 92%, transparent 92%); padding:0 .08em;">Primary</span></div>
+          <p class="spec-body">The hero highlighter. For the 1 word a reader should remember per page.</p>
+        </div>
+        <div class="card">
+          <span class="pill mint">Marker · Mint</span>
+          <div class="spec-h2" style="margin: 14px 0 6px;"><span style="background: linear-gradient(transparent 58%, var(--marker-mint) 58%, var(--marker-mint) 92%, transparent 92%); padding:0 .08em;">Positive</span></div>
+          <p class="spec-body">For wins, "fixes", system outcomes. Pairs with the brand.</p>
+        </div>
+        <div class="card">
+          <span class="pill lavender">Marker · Lavender</span>
+          <div class="spec-h2" style="margin: 14px 0 6px;"><span style="background: linear-gradient(transparent 58%, var(--marker-lavender) 58%, var(--marker-lavender) 92%, transparent 92%); padding:0 .08em;">Strategy</span></div>
+          <p class="spec-body">For systems, engineering layers, strategic moves.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 03 · TYPOGRAPHY ============ -->
+    <section>
+      <div class="sec-head">
+        <h2>03 · <em>Typography</em></h2>
+        <div class="sec-no">Fraunces · Inter · JetBrains Mono</div>
+      </div>
+
+      <div class="card">
+        <div class="type-row">
+          <div class="type-meta"><b>Display</b>Fraunces 600<br/>92 / 0.98 / -2.5%</div>
+          <div class="spec-display">How <em>Content</em><br/>is <span class="hi">Viewed</span></div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>H2 / Section</b>Fraunces 600<br/>34 / 1.05 / -2%</div>
+          <div class="spec-h2">The 4-Step <em>ONEGTMLAB</em> Engine.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>H3 / Card title</b>Fraunces 600<br/>24 / 1.1 / -1%</div>
+          <div class="spec-h3">Product Marketing-led Growth</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>Lede</b>Inter 400<br/>18 / 1.55 / 0</div>
+          <div class="spec-lede">The narrative foundation every asset runs on. True behavioral + intent signals, not just firmographics.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>Body</b>Inter 400<br/>14 / 1.6 / 0</div>
+          <div class="spec-body">A well-designed workflow makes you better; tools alone don't. Repeatable system to move from idea → launch → optimization without reinventing the wheel.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>Eyebrow / Mono</b>JetBrains Mono 500<br/>11 / 1 / +14%</div>
+          <div class="spec-mono">LAYER 1 — THE CORE · STAGE 03 · HOW IT STARTS</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 04 · COMPONENTS ============ -->
+    <section>
+      <div class="sec-head">
+        <h2>04 · <em>Components</em></h2>
+        <div class="sec-no">Pills · Cards · Lists · Banners</div>
+      </div>
+
+      <!-- Pills -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="row" style="justify-content: space-between; margin-bottom: 14px;">
+          <span class="pill solid-dark">Pill labels</span>
+          <span class="mono small muted">Every card starts with one.</span>
+        </div>
+        <div class="row">
+          <span class="pill">Default</span>
+          <span class="pill mint">PMM Foundation</span>
+          <span class="pill lavender">PMF · S.U.</span>
+          <span class="pill sky">Transformation</span>
+          <span class="pill butter">KPIs</span>
+          <span class="pill peach">Production</span>
+          <span class="pill blush">Cause of death #1</span>
+          <span class="pill lilac">Enablement</span>
+          <span class="pill olive">Awareness</span>
+          <span class="pill solid-dark">Section banner</span>
+        </div>
+      </div>
+
+      <!-- Tinted cards -->
+      <div class="grid g-3" style="margin-bottom: 20px;">
+        <div class="t-card t-mint">
+          <span class="pill mint">Layer 1 — Core</span>
+          <h3><em style="font-style:italic; font-weight:500;">Product Marketing</em></h3>
+          <p>Everything starts here. Get this wrong and the other layers amplify garbage.</p>
+          <ul class="arrows" style="margin-top: 12px; color: var(--mint-700);">
+            <li>ICP Research</li>
+            <li>Positioning & Messaging</li>
+            <li>GTM Playbooks</li>
+          </ul>
+        </div>
+        <div class="t-card t-lavender">
+          <span class="pill lavender">Layer 2 — Amplifier</span>
+          <h3><em style="font-style:italic; font-weight:500;">Context Engineering</em></h3>
+          <p>Takes PMM foundation and feeds it into AI systems. Quality at 10× volume.</p>
+          <ul class="arrows" style="margin-top: 12px; color: var(--lavender-700);">
+            <li>AI Context files</li>
+            <li>Prompt templates</li>
+            <li>Tone & style calibration</li>
+          </ul>
+        </div>
+        <div class="t-card t-butter">
+          <span class="pill butter">Layer 3 — Activator</span>
+          <h3><em style="font-style:italic; font-weight:500;">GTM Engineering</em></h3>
+          <p>Turns assets into pipeline. Signals → routing → outbound → revenue.</p>
+          <ul class="arrows" style="margin-top: 12px; color: var(--butter-700);">
+            <li>Signal detection</li>
+            <li>Outbound sequences</li>
+            <li>Lead scoring AI</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Do / Don't + Banners -->
+      <div class="grid g-2">
+        <div class="card">
+          <span class="pill solid-dark">Section banner</span>
+          <div style="margin-top:14px; display: flex; flex-direction: column; gap: 10px;">
+            <div class="banner">
+              <div class="row">
+                <span class="pill" style="color:#fff; border-color:rgba(255,255,255,.2);">Attract</span>
+                <span class="title">Before they know you</span>
+              </div>
+              <span style="color: var(--marker-yellow);">★</span>
+            </div>
+            <div class="banner" style="background: var(--brand);">
+              <div class="row">
+                <span class="pill" style="color:#fff; border-color:rgba(255,255,255,.25);">Engage</span>
+                <span class="title">While they're watching</span>
+              </div>
+              <span style="color: #E8F8ED;">◎</span>
+            </div>
+            <div class="banner" style="background: var(--lavender-700);">
+              <div class="row">
+                <span class="pill" style="color:#fff; border-color:rgba(255,255,255,.25);">Close</span>
+                <span class="title">When they're deciding</span>
+              </div>
+              <span style="color: #E8DEFA;">◆</span>
+            </div>
+          </div>
+          <p class="spec-body" style="margin-top: 14px;">Dark-filled banners split an infographic into acts. Use the pill + caps subtitle pattern consistently.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill solid-dark">Do · Don't</span>
+          <h3 class="spec-h3" style="margin: 12px 0 14px;">Stage 3 · System Wiring</h3>
+          <div class="dd">
+            <div class="dd-row do"><span class="mark">✓</span><span>Wire signal detection → enrichment → outbound pipeline</span></div>
+            <div class="dd-row do"><span class="mark">✓</span><span>Build AI context files from PMM docs. Systematize content.</span></div>
+            <div class="dd-row dont"><span class="mark">✕</span><span>Go autonomous AI before validating repeatable outcomes.</span></div>
+            <div class="dd-row dont"><span class="mark">✕</span><span>Hire a large sales team before the system is proven.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 05 · PATTERNS ============ -->
+    <section>
+      <div class="sec-head">
+        <h2>05 · <em>Patterns</em></h2>
+        <div class="sec-no">Stages · Funnels · Flows</div>
+      </div>
+
+      <!-- Numbered stage row -->
+      <div class="card" style="margin-bottom: 20px;">
+        <span class="pill solid-dark">Numbered stages</span>
+        <h3 class="spec-h3" style="margin: 12px 0 18px;">The 6-Stage Workflow.</h3>
+        <div class="grid" style="grid-template-columns: repeat(6, 1fr); gap: 14px;">
+          <div class="t-card t-mint" style="min-height: 0; padding: 14px;"><div class="stage-num stage-mint" style="margin-bottom: 10px;">01</div><b style="font-family:var(--font-display); font-size: 15px; color:var(--mint-700);">Market Discovery</b></div>
+          <div class="t-card t-sky" style="min-height: 0; padding: 14px;"><div class="stage-num stage-sky" style="margin-bottom: 10px;">02</div><b style="font-family:var(--font-display); font-size: 15px; color:var(--sky-700);">Positioning</b></div>
+          <div class="t-card t-lavender" style="min-height: 0; padding: 14px;"><div class="stage-num stage-lav" style="margin-bottom: 10px;">03</div><b style="font-family:var(--font-display); font-size: 15px; color:var(--lavender-700);">ICP Refinement</b></div>
+          <div class="t-card t-lilac" style="min-height: 0; padding: 14px;"><div class="stage-num stage-lilac" style="margin-bottom: 10px;">04</div><b style="font-family:var(--font-display); font-size: 15px; color:var(--lilac-700);">Enablement</b></div>
+          <div class="t-card t-peach" style="min-height: 0; padding: 14px;"><div class="stage-num stage-peach" style="margin-bottom: 10px;">05</div><b style="font-family:var(--font-display); font-size: 15px; color:var(--peach-700);">GTM Ops</b></div>
+          <div class="t-card t-olive" style="min-height: 0; padding: 14px;"><div class="stage-num stage-olive" style="margin-bottom: 10px;">06</div><b style="font-family:var(--font-display); font-size: 15px; color:var(--olive-700);">Optimization</b></div>
+        </div>
+      </div>
+
+      <!-- Funnel -->
+      <div class="card" style="margin-bottom: 20px;">
+        <span class="pill solid-dark">Gradient funnel</span>
+        <h3 class="spec-h3" style="margin: 12px 0 18px;">Green → Red. Healthy → Leaking.</h3>
+        <div class="funnel-bar">
+          <div class="f-0"><div style="font-size:10px; opacity:.6;">100%</div><b style="font-family:var(--font-display); font-size:13px; display:block;">Awareness</b></div>
+          <div class="f-1"><div style="font-size:10px; opacity:.6;">72%</div><b style="font-family:var(--font-display); font-size:13px; display:block;">Prospecting</b></div>
+          <div class="f-2"><div style="font-size:10px; opacity:.6;">38%</div><b style="font-family:var(--font-display); font-size:13px; display:block;">Connect</b></div>
+          <div class="f-3"><div style="font-size:10px; opacity:.6;">18%</div><b style="font-family:var(--font-display); font-size:13px; display:block;">Demo</b></div>
+          <div class="f-4"><div style="font-size:10px; opacity:.6;">9%</div><b style="font-family:var(--font-display); font-size:13px; display:block;">Proposal</b></div>
+          <div class="f-5"><div style="font-size:10px; opacity:.6;">3%</div><b style="font-family:var(--font-display); font-size:13px; display:block;">Close</b></div>
+          <div class="f-6"><div style="font-size:10px; opacity:.6;">1.8%</div><b style="font-family:var(--font-display); font-size:13px; display:block;">Won</b></div>
+        </div>
+      </div>
+
+      <!-- Flow strip -->
+      <div class="card">
+        <span class="pill solid-dark">Flow · left to right</span>
+        <h3 class="spec-h3" style="margin: 12px 0 18px;">Step → arrow → step.</h3>
+        <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 12px; align-items: stretch;">
+          <div class="t-card t-lavender" style="min-height:0; padding:14px;">
+            <span class="pill lavender">Step 01</span>
+            <h3 style="font-family:var(--font-display); font-size:17px; margin-top:10px; color:var(--lavender-700);"><em style="font-weight:500; font-style:italic;">Identify</em> target accounts</h3>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="t-card t-mint" style="min-height:0; padding:14px;">
+            <span class="pill mint">Step 02</span>
+            <h3 style="font-family:var(--font-display); font-size:17px; margin-top:10px; color:var(--mint-700);"><em style="font-weight:500; font-style:italic;">Build</em> AI narrative</h3>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="t-card t-butter" style="min-height:0; padding:14px;">
+            <span class="pill butter">Step 03</span>
+            <h3 style="font-family:var(--font-display); font-size:17px; margin-top:10px; color:var(--butter-700);"><em style="font-weight:500; font-style:italic;">Construct</em> outbound</h3>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="t-card t-sky" style="min-height:0; padding:14px;">
+            <span class="pill sky">Step 04</span>
+            <h3 style="font-family:var(--font-display); font-size:17px; margin-top:10px; color:var(--sky-700);"><em style="font-weight:500; font-style:italic;">Operationalize</em> AI GTM</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 · TOKENS ============ -->
+    <section>
+      <div class="sec-head">
+        <h2>06 · <em>Tokens</em></h2>
+        <div class="sec-no">Radius · Elevation · Spacing</div>
+      </div>
+
+      <div class="grid g-4" style="margin-bottom: 20px;">
+        <div class="token-tile"><div class="demo" style="border-radius: 6px;"></div><b>Hairline — 6px</b><code>--r-xs</code></div>
+        <div class="token-tile"><div class="demo" style="border-radius: 10px;"></div><b>Pill label — 10px</b><code>--r-sm</code></div>
+        <div class="token-tile"><div class="demo" style="border-radius: 14px;"></div><b>Inner card — 14px</b><code>--r-md</code></div>
+        <div class="token-tile"><div class="demo" style="border-radius: 20px;"></div><b>Tinted card — 20px</b><code>--r-lg</code></div>
+      </div>
+
+      <div class="grid g-3">
+        <div class="token-tile" style="background:var(--bg);">
+          <div style="height:72px; background:#fff; border-radius:14px; box-shadow: var(--shadow-card); border:1px solid var(--line);"></div>
+          <b>Card elevation</b><code>0 8px 24px rgba(20,30,20,.05)</code>
+        </div>
+        <div class="token-tile" style="background:var(--bg);">
+          <div style="height:72px; background:#fff; border-radius:14px; box-shadow: var(--shadow-pop); border:1px solid var(--line);"></div>
+          <b>Hover / Pop</b><code>0 16px 40px rgba(20,30,20,.08)</code>
+        </div>
+        <div class="token-tile">
+          <div class="pattern-strip"></div>
+          <b>Topographic motif</b><code>Dashed concentric rings · opacity .45</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <div class="signature">
+      <div class="author">
+        <div class="avatar"></div>
+        <div>
+          <div class="who"><em>OneGTMLab</em> · Visual System</div>
+          <div class="what">Distilled from the 2026 cheatsheet series</div>
+        </div>
+      </div>
+      <div class="wordmark">ONEG<span class="t" style="color:var(--brand);">T</span>MLAB</div>
+    </div>
+  </div>
+</body>
+</html>
